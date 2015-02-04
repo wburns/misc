@@ -1,0 +1,78 @@
+
+
+Will Status Infinispan 7.2+
+===================
+:author:    William Burns
+:backend:   slidy
+:max-width: 45em
+:icons:
+
+Agenda
+------
+* Eviction based Container improvements
+* Multi Get/Put Commands
+* Entry Retriever Framework
+* Continuous Query / Sliding Window Query
+* Hot Rod Entry Iterator
+
+
+Eviction based Container improvements
+-------------
+
+=== Improve to utitilize ConcurrentHashMapV8 changes
+* https://issues.jboss.org/browse/ISPN-3023
+* Resizes dynamically
+** Less memory used upon startup irrespective of max size
+** Provides more fine grained synchronization
+* Eviction strategies can be improved
+** Size applies to all contents of the container
+** Size can be any long value
+* Almost done should be in 7.2.0.Alpha1
+
+=== Data container striping
+* Provide way to access all key value pairs of a given segment.  This can provide certain operations to not have to iterate over all the contents of the container
+** Helps with transfer and removal of segments when a rebalance occurs
+** Helps with distributed entry retrieval request to reduce memory overhead and possible retries
+* This is only half of the problem as the cache loader/store would also need to support this for full benefits
+It is unclear due to the last point if this issue is worth it or not as the loader would benefit would be significantly higher than for the container
+
+Multi Get/Put Commands
+-----------
+Today if a user desires to retrieve values for a given set of keys they must query them one by one.  The same is true for updating multiple values.
+
+The desire is to provide a way to do this more efficiently so that the amount of network requests is minimzed.
+
+Radim has nicely contributed some initial work for the multi get, which is much appreciated.
+
+Entry Retriever Framework
+------------
+
+=== Sorting of results
+Results retrieved from the entry retriever can be returned in any order.  This requires client side ordering which is not memory friendly for the executing node.
+
+* Add optional Comparator interface to entry retrieval methods when sorting is required
+* Each node would have to maintain a bounded queue of entries that are to be used for retrieval
+* Target node pulls as needed from other nodes to gurantee ordering
+* https://issues.jboss.org/browse/ISPN-4358
+
+
+=== Generic Framework
+The framework is very tightly coupled to entry retrieval.
+
+* Look at overlap with distexec and map reduce to see if they can be enhanced to support rebalance operations ran conurrently with ongoing requests
+* Allow for pluggable execution policy
+** Control how many concurrent operations run (currently limited to 1 for memory preservation)
+
+Continuous Query / Sliding Window Query
+-----------
+Now that we have cluster listeners it is possible to add continuous query support.
+
+I will likely be collaborating with Galder/Adrian regarding this.
+
+Hot Rod Entry Iterator
+------------
+Similar to the newly added entry retriever for embedded it is desired to add this functionality to hot rod client.
+
+* Will reduce memory required to do rolling upgrades
+
+Need to still find out more info about this with Galder/Tristan etc.
