@@ -1,7 +1,7 @@
 
 
 Will Status Infinispan 7.2+
-===================
+===========================
 :author:    William Burns
 :backend:   slidy
 :max-width: 45em
@@ -17,7 +17,7 @@ Agenda
 
 
 Eviction based Container improvements
--------------
+-------------------------------------
 
 === Improve to utitilize ConcurrentHashMapV8 changes
 * https://issues.jboss.org/browse/ISPN-3023
@@ -45,7 +45,7 @@ The desire is to provide a way to do this more efficiently so that the amount of
 Radim has nicely contributed some initial work for the multi get, which is much appreciated.
 
 Entry Retriever Framework
-------------
+-------------------------
 
 === Sorting of results
 Results retrieved from the entry retriever can be returned in any order.  This requires client side ordering which is not memory friendly for the executing node.
@@ -64,13 +64,13 @@ The framework is very tightly coupled to entry retrieval.
 ** Control how many concurrent operations run (currently limited to 1 for memory preservation)
 
 Continuous Query / Sliding Window Query
------------
+---------------------------------------
 Now that we have cluster listeners it is possible to add continuous query support.
 
 I will likely be collaborating with Galder/Adrian regarding this.
 
 Hot Rod Entry Iterator
-------------
+----------------------
 Similar to the newly added entry retriever for embedded it is desired to add this functionality to hot rod client.
 
 * Will reduce memory required to do rolling upgrades
