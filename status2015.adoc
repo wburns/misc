@@ -37,7 +37,7 @@ Eviction based Container improvements
 It is unclear due to the last point if this issue is worth it or not as the loader would benefit would be significantly higher than for the container
 
 Multi Get/Put Commands
------------
+----------------------
 Today if a user desires to retrieve values for a given set of keys they must query them one by one.  The same is true for updating multiple values.
 
 The desire is to provide a way to do this more efficiently so that the amount of network requests is minimzed.
